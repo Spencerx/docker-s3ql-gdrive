@@ -108,7 +108,8 @@ echo "starting mount $S3QL_STORAGE_URL on $S3QL_MOUNT ..."
   --cachesize $S3QL_CACHESIZE \
   --max-cache-entries $S3QL_CACHE_ENTRIES \
   --metadata-upload-interval $S3QL_METADATA_INTERVAL \
+  --fg \
   $BACKEND_OPTIONS \
   $S3QL_STORAGE_URL \
-  $S3QL_MOUNT || tail -n 25 $S3QL_LOG && echo "Waiting 10 secs ..." && sleep 10 && exit -1
+  $S3QL_MOUNT || tail -n 25 $S3QL_LOG && echo "Failed mount. Waiting 10 secs ..." && sleep 10 && exit -1
 

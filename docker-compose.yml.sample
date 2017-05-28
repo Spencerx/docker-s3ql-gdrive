@@ -1,0 +1,24 @@
+s3ql-data:
+  image: sdelrio/s3ql-gdrive
+  cap_add:
+    - mknod
+    - sys_admin
+  devices:
+    - /dev/fuse
+  privileged: true
+  environment:
+    - 'S3QL_COMPRESS=none'
+    - 'S3QL_MOUNT=/data'
+    - 'S3QL_CACHEDIR=/root/.s3ql'
+    - 'S3QL_LOG=/root/.s3ql/s3qlmount.log'
+    - 'S3QL_THREADS=10'
+    - 'S3QL_CACHE_ENTRIES=10000'
+    - 'S3QL_CACHESIZE=10000000'
+    - 'S3QL_METADATA_INTERVAL=7200'
+    - 'S3QL_STORAGE_URL=gdrive://data'
+    - 'S3QL_USER=xxxxxxxxxxxxxxxxx'
+    - 'S3QL_PASSWORD=xxxxxxxxxxxxxxxx'
+    - 'S3QL_FSPP=xxxxxxxxxxxxxxxxxx'
+  volumes:
+    - '/mnt/data:/data'
+

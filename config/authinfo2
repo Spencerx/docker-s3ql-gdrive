@@ -1,0 +1,5 @@
+[s3ql_backend]
+backend-login: 
+backend-password:
+fs-passphrase: 
+storage-url: 

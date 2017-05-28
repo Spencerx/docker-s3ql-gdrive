@@ -1,0 +1,114 @@
+#!/bin/bash
+
+# s3ql configuration
+
+CONFIGFILE=/root/.s3ql/authinfo2
+chmod 600 $CONFIGFILE
+
+if [ "$S3QL_BACKEND_OPTIONS" ]; then
+    BACKEND_OPTIONS="--backend-options $S3QL_BACKEND_OPTIONS"
+fi
+
+# max-cache-entries (check ulimit -n to be at least 100 bigger than this)
+
+if [ -z "$S3QL_CACHE_ENTRIES" ]; then
+    S3QL_CACHE_ENTRIES=17000
+fi
+
+# mountpoint
+
+if [ -z "$S3QL_MOUNT" ]; then
+    S3QL_MOUNT=/mnt/data
+fi
+
+# cachedir
+
+if [ -z "$S3QL_CACHEDIR" ]; then
+    S3QL_CACHEDIR=/tmp/data_cache
+    mkdir $S3QL_CACHEDIR
+fi
+
+# Log file
+if [ -z "$S3QL_LOG" ]; then
+    S3QL_LOG=/root/.s3ql/s3qlmount.log
+fi
+
+# number of threads
+
+if [ -z "$S3QL_THREADS" ]; then
+    S3QL_THREADS=10
+fi
+
+# cachesize (size is in KB)
+
+if [ -z "$S3QL_CACHESIZE" ]; then
+    # 10 GB:
+    S3QL_CACHESIZE=$(( 10 * 1024 * 1024 ))
+fi
+
+# metadata-upload-interval (Size is in seconds)
+
+if [ -z "$S3QL_METADATA_INTERVAL" ]; then
+    S3QL_METADATA_INTERVAL=$(( 6 * 60 * 60 ))
+fi
+
+# storage-url example: gdrive://data)
+
+if [ "$S3QL_STORAGE_URL" ]; then
+    sed -i "s#^storage-url:.*#storage-url: $S3QL_STORAGE_URL#" $CONFIGFILE
+else
+    S3QL_STORAGE_URL=gdrive://data
+fi
+
+# backend-login
+
+if [ "$S3QL_USER" ]; then
+    sed -i "s#^backend-login:.*#backend-login: $S3QL_USER#" $CONFIGFILE
+fi
+
+# backend-password
+
+if [ "$S3QL_PASSWORD" ]; then
+    sed -i "s#^backend-password:.*#backend-password: $S3QL_PASSWORD#" $CONFIGFILE
+fi
+
+# filesystem passphrase
+
+if [ "$S3QL_FSPP" ]; then
+    sed -i "s#^fs-passphrase:.*#fs-passphrase: $S3QL_FSPP#" $CONFIGFILE
+fi
+
+# if no filesystem compress defined, do zlib by defaul
+
+if [ -z "$S3QL_COMPRESS" ]; then
+    S3QL_COMPRESS=zlib
+fi
+
+echo starting s3ql on $S3QL_STORAGE_URL ...
+
+# FSCK on startup just in case
+echo "starting fsck $S3QL_STORAGE_URL ..."
+
+echo "continue"| /usr/local/bin/fsck.s3ql \
+  --batch $BACKEND_OPTIONS \
+  --log $S3QL_LOG \
+  --cachedir $S3QL_CACHEDIR \
+   $S3QL_STORAGE_URL || (tail -n 25 $S3QL_LOG )
+
+# MOUNT S3QL filesystem
+echo "starting mount $S3QL_STORAGE_URL on $S3QL_MOUNT ..."
+
+/usr/local/bin/mount.s3ql \
+  --threads $S3QL_THREADS \
+  --compress $S3QL_COMPRESS \
+  --nfs \
+  --allow-other \
+  --cachedir $S3QL_CACHEDIR \
+  --log $S3QL_LOG \
+  --cachesize $S3QL_CACHESIZE \
+  --max-cache-entries $S3QL_CACHE_ENTRIES \
+  --metadata-upload-interval $S3QL_METADATA_INTERVAL \
+  $BACKEND_OPTIONS \
+  $S3QL_STORAGE_URL \
+  $S3QL_MOUNT || tail -n 25 $S3QL_LOG && echo "Waiting 10 secs ..." && sleep 10 && exit -1
+

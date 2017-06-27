@@ -30,7 +30,7 @@ jobs:
         - IMGNAME=sdelrio/s3ql-gdrive
       script:
       # test x86 image
-      - docker run --rm --entrypoint "/bin/ls" -ti $IMGNAME:$TAG -l /usr/local/bin/*s3ql*
+      - docker run --rm --entrypoint "/bin/ls" -ti $IMGNAME:$TAG -l /usr/local/bin
       - docker run --rm --entrypoint "/usr/local/bin/mount.s3ql" -ti $IMGNAME:$TAG --version
       - docker run --rm --entrypoint "/usr/local/bin/s3qlstat"   -ti $IMGNAME:$TAG --version
       - docker run --rm --entrypoint "/usr/local/bin/fsck.s3ql"  -ti $IMGNAME:$TAG --version

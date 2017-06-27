@@ -25,6 +25,9 @@ jobs:
           docker push $IMGNAME
         fi
     - stage: test
+      env:
+        - TAG=$(grep "ENV VERSION" Dockerfile | awk 'NF>1{print $NF}')
+        - IMGNAME=sdelrio/s3ql-gdrive
       script:
       # test x86 image
       - docker run --rm -ti --entrypoint sh $IMGNAME:$TAG /usr/local/bin/mount.s3ql -h

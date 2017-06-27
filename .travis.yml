@@ -4,7 +4,7 @@ language: generic
 notifications:
   slack:
     rooms:
-      secure: x1Xxi30dKk26LUWSASi5SiQvlQtTqDW5zBnZNh6lV1fSG3octj23s4FwT/pJ/j2aqNlLUq1GtXC/jssCSeCtzEovAv4XXNAqUqFP0TUfWvOWuxmUGTechxgVH66TD8oAhEuXN+LG1Vgq75uCyTkn/IBFHqOZfWXzQSpSe6XLSvYc/PF4SfVUlMV8ODFcX0ONo5kNOScpxCYCoT0DnDyw+6GreE4OAhZYhsxRwS7mCKf4c75BFHsoMKVHaxQLl1IMNXOM81X6wwH420341XAmDJ5XeUp4I+6JxNKV20OJ0WqmgWEs94XYy7koY19LRDsZAHsE9OBae+L6/4uxAIGx8pPsuBrakO8bYT0vG3JIkQZQLbYthvNTK5WFR3xjn2ARec2wLGI1icO7hY8WaPkaU7DGququOIfG3VQPKqND8WbijoEWO9eyFLvL86nqNiHlbsfdunD5qwArn1Hb+MP+a9H3veyrzyKam6S26R8SqObFD8V3Rlvie/tjQUZtIb39tsy4goMBa91vo7WLTo/pbK9GMJzSrOYjZs+TeiUWCp9VFlAUKXM3IYn+7M31NToPD9E+RFIChmQmFIOBE4xlNxow6aQxLRr0r4ET7EhFja7dwGj/zwhuqgfz1mrIKoWzsxXBmz7rTTW5mAJNpPK1QISFDXctvPry2F9Y03dXOPU=
+      secure: aNpX4N8emEpgXYQM0FjO/w2k/AU7XTxkEiBe68ZCvCxyPaAjP4wnMxEUYCu3zXIXWryx8Ez7CCXaQ43cDhwqeYsbFKVISga+rScNjCqqKK/3oae65VBR3+JivybucLvSDRk9enLqs3LQCSji0586tru2Hp+pOKl4h8TbFvu/ZkMM40YlKABc0Zae3afXusIwBDIKQ/udI3f66y3gIbkuf3lllR2UhjBy1bSR/REhC0Dosa3ykofVXWGRmWSdO/NADFXuqiXOlrLqrKKTV0Fg/LEwNMhgXJFN809S1kwyl9rIcD0sW92cSIgw64PPJ0dORIv6y8mPWcmL1+g0y4XwojqraSU79Rn8y0CtTwLzZcFskSvBn0F6aHmHKLXqg3BNwhvbCaXujBix2inOTByk6HjuCLFhr07F49rAN7tRvv+F3aFqx6JTKY/Dyu2oKPZSGUmf8sOWAp0+jUV3UW2M0yv+WHJ7ecgmkBb0Vwf1vVu/qU7UryBZzgw+KcooSKPPtm2dCrhO/xaAKbX/+imUgRNuqQl0ET/erm0PwOlOkdR2tbDMwXuktxdCTjeDe6mj218FDaJ6J7Adl2UgFIsTC4p+ZEPCp+LipMWwC2kB+podGeisoPGRKWXDb3FVS4KfxjUCGvORzs3kzqg5+ZM9FV6uK4LzsvsIfrmKk8E05D4=
     on_success: always
     on_failure: always
 jobs:
@@ -30,5 +30,8 @@ jobs:
         - IMGNAME=sdelrio/s3ql-gdrive
       script:
       # test x86 image
-      - docker run --rm -ti --entrypoint sh $IMGNAME:$TAG /usr/local/bin/mount.s3ql -h
-
+      - docker run --rm --entrypoint "/bin/ls" -ti $IMGNAME:$TAG -l /usr/local/bin/*s3ql*
+      - docker run --rm --entrypoint "/usr/local/bin/mount.s3ql" -ti $IMGNAME:$TAG --version
+      - docker run --rm --entrypoint "/usr/local/bin/s3qlstat"   -ti $IMGNAME:$TAG --version
+      - docker run --rm --entrypoint "/usr/local/bin/fsck.s3ql"  -ti $IMGNAME:$TAG --version
+      - docker run --rm --entrypoint "/usr/local/bin/mkfs.s3ql"  -ti $IMGNAME:$TAG --version

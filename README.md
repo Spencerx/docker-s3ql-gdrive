@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/sdelrio/docker-s3ql-gdrive.svg?branch=master)](https://travis-ci.org/sdelrio/docker-s3ql-gdrive)
 
 Proof of concept container. It will automatically mount an image with s3ql with the gdrive patch doing fsck at the begining and umount at the end. It really mounts any storage driver on s3ql, but the objective is to use gdrive and then use this container to get data.
 

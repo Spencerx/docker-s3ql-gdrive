@@ -4,7 +4,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 MAINTAINER <sdelrio@users.noreply.github.com>
-ENV VERSION 0.51
+ENV VERSION 0.52
 
 RUN apt-get update \
  && apt-get upgrade -y \
